@@ -29,7 +29,12 @@ model Account {
   @@unique([provider, providerAccountId])
   @@schema("auth")
 }
-
+enum Role {
+  ADMIN
+  USER
+  
+  @@schema("auth")
+}
 model Session {
   id           String   @id
   sessionToken String?
@@ -47,6 +52,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          Role      @default(USER)
   Account       Account[]
   Session       Session[]
 

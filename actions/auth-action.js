@@ -9,7 +9,7 @@ import sendgrid from "@sendgrid/mail";
 import ConfirmEmail from "@/components/emails/email-confirm";
 import { hash } from "bcrypt";
 
-export const loginWithCredential = async (prevState, formData) => {
+export const signInWithCredential = async (prevState, formData) => {
   try {
     await signIn("credentials", {
       email: formData.get("email"),
