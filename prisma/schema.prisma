@@ -24,15 +24,14 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@schema("auth")
 }
 enum Role {
   ADMIN
-  USER
-  
+  USER 
   @@schema("auth")
 }
 model Session {
@@ -40,7 +39,7 @@ model Session {
   sessionToken String?
   userId       String   @db.Uuid
   expires      DateTime
-  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@schema("auth")
 }

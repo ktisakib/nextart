@@ -3,11 +3,10 @@
 import { generateShortCode } from "@/lib/generate-short-code";
 import prisma from "@/lib/prisma";
 import { signIn } from "@/utils/auth";
-import { AUTH_URL } from "@/utils/env";
 import { render } from "@react-email/render";
 import sendgrid from "@sendgrid/mail";
-import ConfirmEmail from "@/components/emails/email-confirm";
-import { hash } from "bcrypt";
+import ConfirmEmail from "@/components/emails/confirm-email";
+import { hash } from "bcryptjs";
 
 export const signInWithCredential = async (prevState, formData) => {
   try {
@@ -15,7 +14,7 @@ export const signInWithCredential = async (prevState, formData) => {
       email: formData.get("email"),
       password: formData.get("password"),
       redirect: true,
-      redirectTo: AUTH_URL,
+      redirectTo: process.env.AUTH_URL,
     });
   } catch (err) {
     if (err.message.includes("CredentialsSignin")) {
@@ -25,12 +24,7 @@ export const signInWithCredential = async (prevState, formData) => {
   }
 };
 
-export const signInwithOAuth = async (provider) => {
-  await signIn(provider, {
-    redirect: true,
-    redirectTo: AUTH_URL,
-  });
-};
+
 
 export const signUp = async (prevState, formData) => {
   try {

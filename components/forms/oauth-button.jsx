@@ -1,23 +1,34 @@
-import React from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { signInwithOAuth } from "@/actions/auth-action";
+import { signIn } from "@/utils/auth";
 
-
-const AuthButton = async ({ provider,Icon }) => {
+const OAuthButton = async ({ provider, Icon }) => {
   return (
-    <form action={async () => {signInwithOAuth(provider)}} 
-    className="w-full">
+    <form
+      action={async () => {
+        "use server";
+        try {
+          await signIn("github", {
+            redirect: true,
+            redirectTo: "/dashboard",
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }}
+      className="w-full "
+    >
       <Button
+        type="submit"
         className={cn(
-          "mt-2 flex w-full items-center justify-center gap-2 bg-foreground text-background  ",
+          "mt-2 flex w-full items-center justify-center gap-2 bg-foreground text-background  "
         )}
       >
-        <Icon className={cn("fill-background text-foreground")} />{" "}
+        {Icon}
         <p>Log in with {provider}</p>
       </Button>
     </form>
   );
 };
 
-export default AuthButton;
+export default OAuthButton;

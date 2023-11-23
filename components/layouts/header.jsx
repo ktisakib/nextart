@@ -87,7 +87,7 @@ const Header = async () => {
                   title={"Sign Up"}
                 />
                 <NavLink
-                  className="border-r p-10 md:px-10  h-full flex hover:bg-yellow-100 dark:hover:bg-stone-900 place-content-start items-start justify-start border-l "
+                  className="border-r border-b p-10 md:px-10  h-full flex hover:bg-yellow-100 dark:hover:bg-stone-900 place-content-start items-start justify-start border-l "
                   href={"/signin"}
                   title={"Signin"}
                 />

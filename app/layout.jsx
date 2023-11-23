@@ -3,6 +3,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Header from "@/components/layouts/header";
 import { Sheet } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import {  jetBrains_Mono } from "@/lib/fonts";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +17,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className="min-h-screen overflow-hidden  flex flex-col bg-[url(https://grainy-gradients.vercel.app/noise.svg)] ">
+      <body
+        className={cn(
+          jetBrains_Mono.className,
+          "min-h-screen overflow-hidden  flex flex-col bg-[url(https://grainy-gradients.vercel.app/noise.svg)] "
+        )}
+      >
         <ThemeProvider>
           <Sheet>
             <Header />
