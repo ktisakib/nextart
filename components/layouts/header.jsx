@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { array, jetBrains_Mono } from "@/lib/fonts";
 import MobileNav from "./mobile-nav";
 import { auth, signOut } from "@/utils/auth";
-
+import {revalidatePath } from "next/server";
 const Header = async () => {
   const session = await auth();
   return (
@@ -38,7 +38,10 @@ const Header = async () => {
               <form
                 action={async () => {
                   "use server";
-                  signOut();
+                  signOut({
+                    redirect: true,
+                  });
+                  revalidatePath("/")
                 }}
                 className="border-r md:px-10  h-full flex hover:bg-yellow-100 dark:hover:bg-stone-900 place-content-center items-center justify-center border-l "
               >
@@ -72,7 +75,11 @@ const Header = async () => {
                 <form
                   action={async () => {
                     "use server";
-                    signOut();
+                    signOut({
+                      redirect: true,
+                      redirectTo: "/signin",
+                    });
+                    revalidatePath("/")
                   }}
                   className="border-r p-10 md:px-10  h-full flex hover:bg-yellow-100 dark:hover:bg-stone-900 place-content-start items-start justify-start border-l "
                 >

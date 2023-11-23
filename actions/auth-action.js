@@ -7,7 +7,6 @@ import { render } from "@react-email/render";
 import sendgrid from "@sendgrid/mail";
 import ConfirmEmail from "@/components/emails/confirm-email";
 import { hash } from "bcryptjs";
-
 export const signInWithCredential = async (prevState, formData) => {
   try {
     await signIn("credentials", {
@@ -24,6 +23,12 @@ export const signInWithCredential = async (prevState, formData) => {
   }
 };
 
+export const signInwithOAuth = async (provider) => {
+  await signIn(provider, {
+    redirect: true,
+    redirectTo: process.env.NEXT_PUBLIC_AUTH_URL,
+  });
+};
 
 
 export const signUp = async (prevState, formData) => {

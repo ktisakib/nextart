@@ -4,21 +4,20 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  schemas           = ["auth"]
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["auth"]
 }
 
 model Account {
-  id                String  @id
+  id                String  @id @default(cuid())
   userId            String  @db.Uuid
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
@@ -29,13 +28,16 @@ model Account {
   @@unique([provider, providerAccountId])
   @@schema("auth")
 }
+
 enum Role {
   ADMIN
-  USER 
+  USER
+
   @@schema("auth")
 }
+
 model Session {
-  id           String   @id
+  id           String   @id @default(cuid())
   sessionToken String?
   userId       String   @db.Uuid
   expires      DateTime

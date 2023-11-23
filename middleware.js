@@ -4,7 +4,7 @@ export default auth((req) => {
   const url = req.nextUrl;
   const path = url.pathname;
   const session = req.auth;
-console.log("path", session);
+
   // let publicPath =
   //   path === "/" ||
   //   path === "/signin" ||
