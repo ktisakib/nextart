@@ -14,7 +14,7 @@ export const signInWithCredential = async (prevState, formData) => {
       email: formData.get("email"),
       password: formData.get("password"),
       redirect: true,
-      redirectTo: process.env.AUTH_URL,
+      redirectTo: process.env.NEXT_PUBLIC_AUTH_URL,
     });
   } catch (err) {
     if (err.message.includes("CredentialsSignin")) {

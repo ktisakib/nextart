@@ -7,14 +7,10 @@ const OAuthButton = async ({ provider, Icon }) => {
     <form
       action={async () => {
         "use server";
-        try {
-          await signIn("github", {
-            redirect: true,
-            redirectTo: "/dashboard",
-          });
-        } catch (error) {
-          console.log(error);
-        }
+        await signIn("github", {
+          redirect: true,
+          redirectTo: process.env.NEXT_PUBLIC_AUTH_URL,
+        });
       }}
       className="w-full "
     >
