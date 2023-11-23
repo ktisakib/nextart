@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { array, jetBrains_Mono } from "@/lib/fonts";
 import MobileNav from "./mobile-nav";
 import { auth, signOut } from "@/utils/auth";
-import {revalidatePath } from "next/server";
+import { revalidatePath } from "next/server";
 const Header = async () => {
   const session = await auth();
   return (
@@ -38,14 +38,17 @@ const Header = async () => {
               <form
                 action={async () => {
                   "use server";
-                  signOut({
+                  await signOut({
                     redirect: true,
+                    redirectTo: "/signin",
                   });
-                  revalidatePath("/")
+                  revalidatePath("/");
                 }}
                 className="border-r md:px-10  h-full flex hover:bg-yellow-100 dark:hover:bg-stone-900 place-content-center items-center justify-center border-l "
               >
-                <button type="submit">Sign Out</button>{" "}
+                <button className="h-full w-full" type="submit">
+                  Sign Out
+                </button>{" "}
               </form>
             </>
           ) : (
@@ -75,15 +78,11 @@ const Header = async () => {
                 <form
                   action={async () => {
                     "use server";
-                    signOut({
-                      redirect: true,
-                      redirectTo: "/signin",
-                    });
-                    revalidatePath("/")
+                    await signOut();
                   }}
                   className="border-r p-10 md:px-10  h-full flex hover:bg-yellow-100 dark:hover:bg-stone-900 place-content-start items-start justify-start border-l "
                 >
-                  <button type="submit">Sign Out</button>{" "}
+                  <button className="h-full w-full" type="submit">Sign Out</button>{" "}
                 </form>
               </>
             ) : (

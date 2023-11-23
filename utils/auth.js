@@ -2,8 +2,8 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "@/lib/auth.config";
 import prisma from "@/lib/prisma";
-// import { jwt } from "jsonwebtoken";
-const secret= process.env.AUTH_SECRET
+import { SignJWT, jwtVerify } from "jose";
+
 export const {
   handlers: { GET, POST },
   auth,
@@ -13,13 +13,32 @@ export const {
   // debug: true,
   trustHost: true,
   adapter: PrismaAdapter(prisma),
-  secret: secret,
+  secret: process.env.AUTH_SECRET,
   jwt: {
-    async encode({ secret, token }) {
-      return jwt.sign(token, secret);
+    async encode(token,user) {
+      try {
+        const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
+        const alg = "HS256";
+        const encoded = await new SignJWT(token)
+          .setProtectedHeader({ alg })
+          .setExpirationTime("7d")
+          .setIssuedAt()
+          .setSubject(token)
+          .sign(secret);
+        return encoded;
+      } catch (error) {
+        throw error;
+      }
     },
-    async decode({ secret, token }) {
-      return jwt.verify(token, secret);
+    async decode(token) {
+      try {
+        const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
+        const decoded = (await jwtVerify(token.token, secret)).payload;
+        return decoded.token;
+      } catch (error) {
+        console.log(error);
+        throw new Error("Your token is invalid or has expired.");
+      }
     },
   },
   session: {

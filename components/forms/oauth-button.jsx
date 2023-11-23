@@ -7,12 +7,13 @@ const OAuthButton = async ({ provider }) => {
   return (
     <form
       action={async () => {
-       await signInwithOAuth(provider);
+        "use server";
+         await signInwithOAuth(provider);
       }}
       className="w-full"
     >
       <Button
-        // aria-disabled={pending}
+        type="submit"
         className={cn(
           "mt-2 flex w-full items-center justify-center gap-2 bg-foreground text-background  "
         )}

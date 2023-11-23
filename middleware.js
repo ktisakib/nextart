@@ -5,19 +5,19 @@ export default auth((req) => {
   const path = url.pathname;
   const session = req.auth;
 
-  // let publicPath =
-  //   path === "/" ||
-  //   path === "/signin" ||
-  //   path === "/signup" ||
-  //   path === "/forgot-password" ||
-  //   path === "/reset-password" ||
-  //   path === "/verify-email";
-  // if (session && publicPath) {
-  //   return NextResponse.redirect(new URL("/dashboard", req.url));
-  // }
-  // if (!session && !publicPath) {
-  //   return NextResponse.redirect(new URL("/signin", req.url));
-  // }
+  let publicPath =
+    path === "/" ||
+    path === "/signin" ||
+    path === "/signup" ||
+    path === "/forgot-password" ||
+    path === "/reset-password" ||
+    path === "/verify-email";
+  if (session && publicPath) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+  if (!session && !publicPath) {
+    return NextResponse.redirect(new URL("/signin", req.url));
+  }
 });
 
 export const config = {

@@ -13,7 +13,7 @@ export const signInWithCredential = async (prevState, formData) => {
       email: formData.get("email"),
       password: formData.get("password"),
       redirect: true,
-      redirectTo: process.env.NEXT_PUBLIC_AUTH_URL,
+      redirectTo: process.env.NEXTAUTH_URL,
     });
   } catch (err) {
     if (err.message.includes("CredentialsSignin")) {
@@ -26,7 +26,7 @@ export const signInWithCredential = async (prevState, formData) => {
 export const signInwithOAuth = async (provider) => {
   await signIn(provider, {
     redirect: true,
-    redirectTo: process.env.NEXT_PUBLIC_AUTH_URL,
+    redirectTo: "/dashboard",
   });
 };
 
