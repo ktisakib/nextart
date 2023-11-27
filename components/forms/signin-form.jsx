@@ -87,10 +87,16 @@ export function SignInForm() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" required />
+          <Input
+            type="password"
+            minLength={8}
+            id="password"
+            name="password"
+            required
+          />
         </div>
         {code === "CredentialsSignin" && (
-          <span className="flex gap-2 pl-4 text-xs text-red-500">
+          <span className="flex gap-2 pl-2 text-xs text-red-500">
             {/* <ErrorIcon className="h-4 w-4 fill-red-500" /> */}
             Email and password don&apos;t match{" "}
           </span>
