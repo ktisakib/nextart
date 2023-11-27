@@ -36,7 +36,6 @@ export const {
         const decoded = (await jwtVerify(token.token, secret)).payload;
         return decoded.token;
       } catch (error) {
-        console.log(error);
         throw new Error("Your token is invalid or has expired.");
       }
     },

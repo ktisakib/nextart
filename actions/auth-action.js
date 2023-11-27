@@ -14,15 +14,18 @@ export const signInWithCredential = async (prevState, formData) => {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: true,
-      redirectTo: "/dashboard",
+      redirect: false,
     });
   } catch (err) {
-    if (err.message.includes("CredentialsSignin")) {
-      return "CredentialsSignin";
+    if (err) {
+      return {
+        error: "Email or password don't match ",
+        code: 301,
+      };
     }
     throw err;
   }
+  redirect("/dashboard");
 };
 
 export const signInwithOAuth = async (provider) => {
@@ -113,7 +116,6 @@ export const signUp = async (
   { password, lastName, username, firstName, email }
 ) => {
   try {
-    console.log(password, lastName, username, firstName, email);
     const data = await prisma.user.findFirst({
       where: { username: username },
     });
@@ -150,7 +152,6 @@ export const signUp = async (
       };
     }
   } catch (error) {
-    console.log(error);
     return {
       code: 301,
       error: "Something went wrong,please try again later",

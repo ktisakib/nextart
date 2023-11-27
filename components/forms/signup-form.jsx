@@ -1,12 +1,9 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
 import { useFormState } from "react-dom";
-
 import { sendMail, signUp, varifyEmail } from "@/actions/auth-action";
 import { ArrowIcon } from "@/components/icons/arrow-icon";
-import { toast } from "sonner";
 import ActionButton from "./action-button";
 import { Button } from "../ui/button";
 export function SignUpForm() {
