@@ -5,7 +5,7 @@ import Header from "@/components/layouts/header";
 import { Sheet } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import {  jetBrains_Mono } from "@/lib/fonts";
-
+import { Toaster } from 'sonner'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
               {children}
             </main>
           </Sheet>
+          <Toaster/>
         </ThemeProvider>
       </body>
     </html>

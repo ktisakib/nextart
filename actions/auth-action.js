@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { generateShortCode } from "@/lib/generate-short-code";
 import prisma from "@/lib/prisma";
 import { signIn } from "@/utils/auth";
@@ -7,20 +8,24 @@ import { render } from "@react-email/render";
 import sendgrid from "@sendgrid/mail";
 import ConfirmEmail from "@/components/emails/confirm-email";
 import { hash } from "bcryptjs";
+
 export const signInWithCredential = async (prevState, formData) => {
   try {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: true,
-      redirectTo: process.env.NEXTAUTH_URL,
+      redirect: false,
     });
   } catch (err) {
-    if (err.message.includes("CredentialsSignin")) {
-      return "CredentialsSignin";
+    if (err) {
+      return {
+        error: "Email or password don't match ",
+        code: 301,
+      };
     }
     throw err;
   }
+  redirect("/dashboard");
 };
 
 export const signInwithOAuth = async (provider) => {
@@ -30,44 +35,57 @@ export const signInwithOAuth = async (provider) => {
   });
 };
 
+export const varifyEmail = async (prevState, formData) => {
+  try {
+    const data = await prisma.VerificationToken.findFirst({
+      where: {
+        token: formData.get("code"),
+      },
+    });
+    if (!data) {
+      return {
+        code: 302,
+        error: true,
+        message: "The token is not valid",
+      };
+    }
+    if (data.expires < Date.now()) {
+      return {
+        code: 302,
+        error: true,
+        message: "The token is expired",
+      };
+    }
+    await prisma.VerificationToken.delete({
+      where: {
+        token: formData.get("code"),
+      },
+    });
 
-export const signUp = async (prevState, formData) => {
+    return {
+      code: 200,
+      error: false,
+      email: data.identifier,
+      message: "Email Verified",
+    };
+  } catch (error) {
+    return error;
+  }
+};
+export const sendMail = async (prevState, formData) => {
   try {
     const email = formData.get("email");
-    const password = formData.get("password");
-    const firstName = formData.get("first-name");
-    const lastName = formData.get("last-name");
-
     const data = await prisma.user.findFirst({
       where: { email: email },
     });
     if (data) {
-      throw new Error("user already exist with this email address");
+      return {
+        code: 301,
+        error: true,
+        message: "user already exists with this email",
+      };
     }
 
-    const hashedPassword = await hash(password, 10);
-
-    const response = await prisma.user.create({
-      data: {
-        name: firstName + " " + lastName,
-        email: email,
-        password: hashedPassword,
-        accounts: {
-          create: [
-            {
-              provider: "email-password",
-              type: "credentials",
-              providerAccountId: await generateShortCode(24),
-              access_token: await generateShortCode(24),
-              token_type: "bearer",
-            },
-          ],
-        },
-      },
-    });
-    if (!response) {
-      throw new Error("Can't create user now! Something went wrong");
-    }
     const token = await generateShortCode(6);
     await prisma.VerificationToken.create({
       data: {
@@ -88,42 +106,56 @@ export const signUp = async (prevState, formData) => {
     };
 
     sendgrid.send(options);
-    return { success: true };
+    return { code: 200, error: false, message: "Email  Sent", email: email };
   } catch (error) {
-    if (error) return { error: error.message };
-    throw error;
+    return { error: true, message: "something went wrong", code: 301 };
   }
 };
-
-export const varifyEmail = async (prevState, formData) => {
+export const signUp = async (
+  prevState,
+  { password, lastName, username, firstName, email }
+) => {
   try {
-    const data = await prisma.VerificationToken.findFirst({
-      where: {
-        token: formData.get("token"),
-      },
+    const data = await prisma.user.findFirst({
+      where: { username: username },
     });
-    if (!data) {
-      throw new Error("Invalid Token");
-    }
-    if (data.expires < Date.now()) {
-      throw new Error("Token Expired");
-    }
-    await prisma.VerificationToken.delete({
-      where: {
-        token: data.token,
-      },
-    });
-    await prisma.user.update({
-      where: {
-        email: data.identifier,
-      },
+    if (data)
+      return {
+        code: 302,
+        error: "Username already exists",
+      };
+    const hashedPassword = await hash(password, 10);
+    const response = await prisma.user.create({
       data: {
+        name: firstName + " " + lastName,
+        email: email,
+        username: username,
+        password: hashedPassword,
         emailVerified: new Date(),
+        Account: {
+          create: [
+            {
+              provider: "email-password",
+              type: "credentials",
+              providerAccountId: await generateShortCode(24),
+              access_token: await generateShortCode(24),
+              token_type: "bearer",
+            },
+          ],
+        },
       },
     });
+    if (!response) {
+      return {
+        code: 301,
+        error: "Something went wrong,please try again later",
+      };
+    }
   } catch (error) {
-    if (error) return { error: error.message };
-    throw error;
+    return {
+      code: 301,
+      error: "Something went wrong,please try again later",
+    };
   }
-  await loginWithCredential(prevState, formData);
+  redirect("/signin");
 };
