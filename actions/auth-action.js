@@ -95,8 +95,8 @@ export const sendMail = async (prevState, formData) => {
       },
     });
 
-    sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
-    const emailHtml = render(<ConfirmEmail validationCode={token} />);
+    await sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+    const emailHtml = await render(<ConfirmEmail validationCode={token} />);
 
     const options = {
       from: "no-reply@redlnk.com",
@@ -105,7 +105,9 @@ export const sendMail = async (prevState, formData) => {
       html: emailHtml,
     };
 
-    sendgrid.send(options);
+    const maildata = await sendgrid.send(options);
+    console.log(maildata[0].statusCode);
+    if (maildata[0].statusCode !== 202) throw new Error("Something went wrong");
     return { code: 200, error: false, message: "Email  Sent", email: email };
   } catch (error) {
     return { error: true, message: "something went wrong", code: 301 };
