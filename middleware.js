@@ -4,7 +4,6 @@ export default auth((req) => {
   const url = req.nextUrl;
   const path = url.pathname;
   const session = req.auth;
-
   let publicPath =
     path === "/" ||
     path === "/signin" ||
@@ -17,6 +16,11 @@ export default auth((req) => {
   }
   if (!session && !publicPath) {
     return NextResponse.redirect(new URL("/signin", req.url));
+  }
+  const adminPath = path.startsWith("/admin");
+
+  if (adminPath && session.role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 });
 
