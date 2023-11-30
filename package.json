@@ -21,6 +21,7 @@
     "@react-email/render": "^0.0.9",
     "@sendgrid/mail": "^7.7.0",
     "bcryptjs": "^2.4.3",
+    "blurhash": "^2.0.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "jose": "^5.1.1",

@@ -1,14 +1,14 @@
-import { auth } from "@/utils/auth";
-
-import Image from "next/image";
+import React from "react";
 import Link from "next/link";
-const DashboardPage = async () => {
+import Image from "next/image";
+import { auth } from "@/utils/auth";
+const AdminPage = async () => {
   const session = await auth();
-
   return (
     <div className=" border p-4">
       <div className="flex flex-col items-center justify-center">
-        <h1>User Dahsboard</h1>
+        <h1>Admin Dahsboard</h1>
+
         <div className="flex flex-col items-center justify-center">
           <Image
             src={session?.user?.image}
@@ -28,7 +28,10 @@ const DashboardPage = async () => {
           ) : (
             <h1>
               you Don&apos;t have access to Admin Dashboard goto
-              <Link className="underline decoration-slate-300" href={"/admin"}>/admin</Link> you will be redirected to /dashboard
+              <Link className="underline decoration-slate-300" href={"/admin"}>
+                /admin
+              </Link>{" "}
+              you will be redirected to /dashboard
             </h1>
           )}
         </div>
@@ -36,4 +39,5 @@ const DashboardPage = async () => {
     </div>
   );
 };
-export default DashboardPage;
+
+export default AdminPage;
